@@ -1,11 +1,19 @@
-// Ubicación: src/services/api.js
 import axios from 'axios';
 
+
+const API_URL = import.meta.env.VITE_API_URL;
+
+
+if (!API_URL) {
+    throw new Error("La variable de entorno VITE_API_URL no está configurada. Asegúrate de añadirla a tu configuración de Vercel o a tu archivo .env.local para desarrollo.");
+}
+
+
 const apiClient = axios.create({
-    baseURL: 'http://localhost:8080/api/v1', // La URL base de tu API
+    baseURL: `${API_URL}/api/v1`,
 });
 
-// Interceptor para añadir el token JWT a cada petición
+
 apiClient.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('token');
@@ -15,6 +23,7 @@ apiClient.interceptors.request.use(
         return config;
     },
     (error) => {
+        // Maneja errores en la configuración de la petición.
         return Promise.reject(error);
     }
 );
